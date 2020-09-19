@@ -29,7 +29,7 @@ func main() {
       go http.ListenAndServe(":8080", nil)
 
       authURL := getAuthURL(clientID, secretKey, redirectURL, scope...)
-      fmt.Println("Opening: ", authURL)
+      fmt.Println("Opening:", authURL)
       openbrowser(authURL)
 
       client := <-clientChan
@@ -39,7 +39,7 @@ func main() {
             log.Fatalln(err)
       }
 
-      fmt.Println("Logged in as: ", user.ID)
+      fmt.Println("Logged in as:", user.ID)
 
       reader := bufio.NewReader(os.Stdin)
       simplePlaylistPage, err := client.GetPlaylistsForUser(user.ID)
@@ -55,7 +55,7 @@ func main() {
       }
 
       playlistToRandomize := simplePlaylistPage.Playlists[choice - 1]
-      fmt.Println("Randomizing: ", playlistToRandomize.Name)
+      fmt.Println("Randomizing:", playlistToRandomize.Name)
 
       outputPlaylist, err := client.CreatePlaylistForUser(user.ID, fmt.Sprintf("Randomizing %s", playlistToRandomize.Name), fmt.Sprintf("Randomized playlist made from each artist from %s", playlistToRandomize.Name), false)
       if(err != nil) {

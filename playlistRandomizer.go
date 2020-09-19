@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
 	"log"
 	"github.com/zmb3/spotify"
 )
@@ -27,7 +26,7 @@ func randomizePlaylist(client *spotify.Client, playist, randomizedPlaylist spoti
 		}
 	}
 
-	fmt.Println("Getting  Artist top tracks")
+	fmt.Println("Getting Artist top tracks")
 	topTracksByArtistID, err := getTopTracksForArtists(client, uniqArtistIDs)
 	if err != nil {
 		log.Fatalln(err)
@@ -36,13 +35,14 @@ func randomizePlaylist(client *spotify.Client, playist, randomizedPlaylist spoti
 
 	var tracksForRandPL []spotify.ID
 	for _, topTracks := range *topTracksByArtistID {
-		if len(topTracks) > 0 {
-			randTrackNum := rand.Intn(len(topTracks))
-			tracksForRandPL = append(tracksForRandPL, topTracks[randTrackNum].ID)
+		for _, track := range topTracks {
+			if(addToPlaylist(tracksForRandPL, &track)) {
+				tracksForRandPL = append(tracksForRandPL, track.ID)
+			}
 		}
 	}
 
-	fmt.Println("Adding Tracks to playlist")
+	fmt.Println("Adding", len(tracksForRandPL),  "tracks to", randomizedPlaylist.Name)
 	if len(tracksForRandPL) > 100 {
 		trackMax := 100
 		trackOffset := 0
